@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        style="@style/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/title_11" />
+
+    <TextView
+        style="@style/simple_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/text_11_0" />
+
+    <ImageView
+        style="@style/formula"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@null"
+        android:src="@drawable/formula_11_0" />
+
+    <TextView
+        style="@style/simple_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/text_11_1" />
+
+    <ImageView
+        style="@style/formula"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@null"
+        android:src="@drawable/formula_11_1" />
+
+    <TextView
+        style="@style/simple_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/text_11_2" />
+
+    <ImageView
+        style="@style/formula"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@null"
+        android:src="@drawable/formula_11_2" />
+
+    <TextView
+        style="@style/simple_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/text_11_3" />
+
+    <ImageView
+        style="@style/formula"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@null"
+        android:src="@drawable/formula_11_3" />
+
+    <TextView
+        style="@style/simple_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/text_11_4" />
+
+    <TextView
+        style="@style/code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/code_11_0" />
+
+    <TextView
+        style="@style/simple_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/text_11_5" />
+
+    <TextView
+        style="@style/code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/code_11_1" />
+
+    <TextView
+        style="@style/simple_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/text_11_6" />
+
+    <TextView
+        style="@style/code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/code_11_2" />
+
+
+
+
+
+
+
+</LinearLayout>
