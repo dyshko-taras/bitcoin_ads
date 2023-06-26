@@ -15,7 +15,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var nextButton: Button
 
     private var page = 0
-    private lateinit var view: View
 
     private val TAG = "MainActivity1"
 
