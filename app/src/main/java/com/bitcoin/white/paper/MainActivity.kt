@@ -7,12 +7,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var textLinearLayout: LinearLayout
     private lateinit var previousButton: Button
     private lateinit var nextButton: Button
+    private lateinit var adView: AdView
 
     private var page = 0
 
@@ -22,6 +26,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initialize()
+
+
+        //ads
+        MobileAds.initialize(this ) {}
+        val adRequest = AdRequest.Builder().build()
+        adView.loadAd(adRequest)
+
+
+
         updateLinearLayoutContent()
         Log.d(TAG, "onCreate")
         previousButton.setOnClickListener() {
@@ -45,6 +58,7 @@ class MainActivity : AppCompatActivity() {
         textLinearLayout = findViewById(R.id.textLinearLayout)
         previousButton = findViewById(R.id.previousButton)
         nextButton = findViewById(R.id.nextButton)
+        adView = findViewById(R.id.adView)
         Log.d(TAG, "initialize")
     }
 
