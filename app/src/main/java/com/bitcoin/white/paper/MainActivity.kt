@@ -29,9 +29,7 @@ class MainActivity : AppCompatActivity() {
 
 
         //ads
-        MobileAds.initialize(this ) {}
-        val adRequest = AdRequest.Builder().build()
-        adView.loadAd(adRequest)
+        loadAdsBanner()
 
 
 
@@ -83,5 +81,11 @@ class MainActivity : AppCompatActivity() {
 
         }
         Log.d(TAG, "updateLinearLayoutContent 2")
+    }
+
+    private fun loadAdsBanner() {
+        MobileAds.initialize(this ) {}
+        val adRequest = AdRequest.Builder().build()
+        adView.loadAd(adRequest)
     }
 }

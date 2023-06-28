@@ -7,6 +7,8 @@ import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.google.android.gms.ads.AdError
@@ -21,12 +23,28 @@ import java.util.Date
 /** Application class that initializes, loads and show ads when activities change states. */
 const val ONESIGNAL_APP_ID = "6c21f115-9bfe-423c-a067-591b9d822e30"
 
-class OneSignalAndOpenAds : Application(), Application.ActivityLifecycleCallbacks, LifecycleObserver {
+class OneSignalAndOpenAds : Application(), Application.ActivityLifecycleCallbacks,
+    LifecycleObserver {
+
 
     private lateinit var appOpenAdManager: AppOpenAdManager
-    val LOG_TAG = "AppOpenAdManager"
     val AD_UNIT_ID = "ca-app-pub-3542796943585316/9843672487"
+
+    //    val AD_UNIT_ID = "ca-app-pub-3940256099942544/3419835294" // for check
     private var currentActivity: Activity? = null
+    val isLoad: MutableLiveData<Boolean> = MutableLiveData(false)
+    var isStart = true
+    val LOG_TAG = "AppOpenAdManager1"
+
+
+    val isLoadObserver = Observer<Boolean> {
+        if (it && isStart) {
+            Log.d(LOG_TAG, "isLoadObserver")
+            Log.d(LOG_TAG, currentActivity!!.javaClass.simpleName)
+            isStart = false
+            appOpenAdManager.showAdIfAvailable(currentActivity!!)
+        }
+    }
 
 
     override fun onCreate() {
@@ -41,14 +59,31 @@ class OneSignalAndOpenAds : Application(), Application.ActivityLifecycleCallback
         MobileAds.initialize(this) {}
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
         appOpenAdManager = AppOpenAdManager()
+        appOpenAdManager.loadAd(this)
+        isLoad.observeForever(isLoadObserver)
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    fun onMoveToForeground() {
-        // Show the ad (if available) when the app moves to foreground.
-        currentActivity?.let {
-            appOpenAdManager.showAdIfAvailable(it)
+    /** ActivityLifecycleCallback methods. */
+    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+        if (!appOpenAdManager.isShowingAd) {
+            currentActivity = activity
         }
+    }
+
+    override fun onActivityStarted(activity: Activity) {}
+
+    override fun onActivityResumed(activity: Activity) {}
+
+    override fun onActivityPaused(activity: Activity) {}
+
+    override fun onActivityStopped(activity: Activity) {}
+
+    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
+
+    override fun onActivityDestroyed(activity: Activity) {}
+
+    interface OnShowAdCompleteListener {
+        fun onShowAdComplete()
     }
 
 
@@ -58,10 +93,6 @@ class OneSignalAndOpenAds : Application(), Application.ActivityLifecycleCallback
         private var appOpenAd: AppOpenAd? = null
         private var isLoadingAd = false
         var isShowingAd = false
-        private var loadTime: Long = 0
-
-
-
 
 
         /** Request an ad. */
@@ -83,7 +114,7 @@ class OneSignalAndOpenAds : Application(), Application.ActivityLifecycleCallback
                         Log.d(LOG_TAG, "Ad was loaded.")
                         appOpenAd = ad
                         isLoadingAd = false
-                        loadTime = Date().time
+                        isLoad.value = true
                     }
 
                     override fun onAdFailedToLoad(loadAdError: LoadAdError) {
@@ -95,13 +126,10 @@ class OneSignalAndOpenAds : Application(), Application.ActivityLifecycleCallback
         }
 
 
-
-
-
-//        /** Check if ad exists and can be shown. */
-//        private fun isAdAvailable(): Boolean {
-//            return appOpenAd != null
-//        }
+        /** Check if ad exists and can be shown. */
+        private fun isAdAvailable(): Boolean {
+            return appOpenAd != null
+        }
 
         fun showAdIfAvailable(activity: Activity) {
             showAdIfAvailable(
@@ -114,15 +142,10 @@ class OneSignalAndOpenAds : Application(), Application.ActivityLifecycleCallback
         }
 
 
-
-
-
-
-
-
         fun showAdIfAvailable(
             activity: Activity,
-            onShowAdCompleteListener: OnShowAdCompleteListener) {
+            onShowAdCompleteListener: OnShowAdCompleteListener
+        ) {
             // If the app open ad is already showing, do not show the ad again.
             if (isShowingAd) {
                 Log.d(LOG_TAG, "The app open ad is already showing.")
@@ -136,12 +159,6 @@ class OneSignalAndOpenAds : Application(), Application.ActivityLifecycleCallback
                 loadAd(activity)
                 return
             }
-
-
-
-
-
-
             appOpenAd?.setFullScreenContentCallback(
                 object : FullScreenContentCallback() {
 
@@ -175,39 +192,5 @@ class OneSignalAndOpenAds : Application(), Application.ActivityLifecycleCallback
             isShowingAd = true
             appOpenAd?.show(activity)
         }
-
-        private fun wasLoadTimeLessThanNHoursAgo(numHours: Long): Boolean {
-            val dateDifference: Long = Date().time - loadTime
-            val numMilliSecondsPerHour: Long = 3600000
-            return dateDifference < numMilliSecondsPerHour * numHours
-        }
-
-        private fun isAdAvailable(): Boolean {
-            return appOpenAd != null && wasLoadTimeLessThanNHoursAgo(4)
-        }
-    }
-
-    /** ActivityLifecycleCallback methods. */
-    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {}
-
-    override fun onActivityStarted(activity: Activity) {
-        // Updating the currentActivity only when an ad is not showing.
-        if (!appOpenAdManager.isShowingAd) {
-            currentActivity = activity
-        }
-    }
-
-    override fun onActivityResumed(activity: Activity) {}
-
-    override fun onActivityPaused(activity: Activity) {}
-
-    override fun onActivityStopped(activity: Activity) {}
-
-    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
-
-    override fun onActivityDestroyed(activity: Activity) {}
-
-    interface OnShowAdCompleteListener {
-        fun onShowAdComplete()
     }
 }
